@@ -41,7 +41,7 @@ const ICONS = {
     </svg>
   ),
 };
-// fallback initial data so the tracker has content on first load
+// sample initial data (used for demos) — includes all fields the UI expects
 const initialTasksData = {
   todo: [
     {
@@ -57,6 +57,9 @@ const initialTasksData = {
       avatar: null,
       log: "Initial scaffold created",
       duration: "5d",
+      email: "ava.patel@example.com",
+      progress: 20,
+      statusPercent: 20,
     },
     {
       id: 2,
@@ -66,11 +69,14 @@ const initialTasksData = {
       assignDate: "2025-11-03",
       expiryDate: "2025-11-12",
       date: "2025-11-03",
-      description: "Refresh the marketing landing with new hero and features section.",
+      description: "Refresh the marketing landing with a new hero and features section.",
       comments: 1,
       avatar: null,
       log: "Wireframes uploaded",
       duration: "4d",
+      email: "liam.johnson@example.com",
+      progress: 10,
+      statusPercent: 10,
     },
     {
       id: 3,
@@ -85,6 +91,9 @@ const initialTasksData = {
       avatar: null,
       log: "Test plan ready",
       duration: "10d",
+      email: "noah.williams@example.com",
+      progress: 0,
+      statusPercent: 0,
     },
   ],
   inProgress: [
@@ -101,11 +110,31 @@ const initialTasksData = {
       avatar: null,
       log: "Benchmarks show 2x improvement",
       duration: "6d",
+      email: "olivia.brown@example.com",
+      progress: 60,
+      statusPercent: 60,
+    },
+    {
+      id: 5,
+      category: "Integration",
+      userName: "Sophia Lee",
+      title: "Payments gateway",
+      assignDate: "2025-10-30",
+      expiryDate: "2025-11-15",
+      date: "2025-10-30",
+      description: "Integrate payments provider and end-to-end flow.",
+      comments: 4,
+      avatar: null,
+      log: "Sandbox connected",
+      duration: "12d",
+      email: "sophia.lee@example.com",
+      progress: 45,
+      statusPercent: 45,
     },
   ],
   reviewReady: [
     {
-      id: 5,
+      id: 6,
       category: "Docs",
       userName: "Emma Davis",
       title: "API documentation",
@@ -117,11 +146,14 @@ const initialTasksData = {
       avatar: null,
       log: "Spec draft complete",
       duration: "8d",
+      email: "emma.davis@example.com",
+      progress: 95,
+      statusPercent: 95,
     },
   ],
   completed: [
     {
-      id: 6,
+      id: 7,
       category: "Ops",
       userName: "Ethan Clark",
       title: "Deploy monitoring",
@@ -133,6 +165,26 @@ const initialTasksData = {
       avatar: null,
       log: "Monitoring live",
       duration: "3d",
+      email: "ethan.clark@example.com",
+      progress: 100,
+      statusPercent: 100,
+    },
+    {
+      id: 8,
+      category: "Release",
+      userName: "Mia Turner",
+      title: "Release v1.2.0",
+      assignDate: "2025-09-15",
+      expiryDate: "2025-09-20",
+      date: "2025-09-15",
+      description: "Ship v1.2.0 with performance fixes and minor features.",
+      comments: 6,
+      avatar: null,
+      log: "Release deployed",
+      duration: "5d",
+      email: "mia.turner@example.com",
+      progress: 100,
+      statusPercent: 100,
     },
   ],
 };
@@ -150,38 +202,33 @@ const loadTasksData = () => {
         ...parsed,
       };
 
-      // If parsed exists but contains no tasks at all, seed with initial data
       const total = (normalized.todo?.length || 0) + (normalized.inProgress?.length || 0) + (normalized.reviewReady?.length || 0) + (normalized.completed?.length || 0);
-      if (total === 0) {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(initialTasksData)); } catch (e) {}
-        return initialTasksData;
-      }
+      // If parsed storage exists but there are no tasks across columns,
+      // return the normalized (empty) grouped object. Do not persist
+      // sample data automatically — the app will start empty until the
+      // user creates tasks.
+      if (total === 0) return normalized;
 
       return normalized;
     }
 
-    // Backwards-compat: some parts of the app (TaskUpdate) save tasks as
-    // a flat array under the key 'taskTrackerTasks'. If present, populate
-    // the todo column with those entries so they appear in the board.
+
     const flat = localStorage.getItem('taskTrackerTasks');
     if (flat) {
       try {
         const arr = JSON.parse(flat);
         if (Array.isArray(arr)) {
-          // persist merged form so subsequent loads use the grouped key
           const merged = { ...initialTasksData, todo: arr };
           try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch (e) {}
           return merged;
         }
       } catch (e) {
-        // fall through to return initial
       }
     }
 
-    // No existing saved data found — persist the initial sample data so
-    // future visits and updates use the grouped storage key.
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(initialTasksData)); } catch (e) {}
-    return initialTasksData;
+  // No saved data found — start with an empty grouped structure. Do not
+  // persist default/empty data so the app doesn't overwrite user intent.
+  return initialTasksData;
   } catch (e) {
     return initialTasksData;
   }
