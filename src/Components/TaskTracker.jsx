@@ -1,4 +1,3 @@
-// TaskTracker.jsx
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Plot from "react-plotly.js";
 import { format } from "date-fns";
@@ -34,14 +33,13 @@ const ICONS = {
       <path d="M16 3v4M8 3v4M3 11h18" strokeLinecap="round" />
     </svg>
   ),
-  
+
   Filters: (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M22 5H2l8 7v7l4 2v-9l8-7z" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   ),
 };
-// sample initial data (used for demos) — includes all fields the UI expects
 const initialTasksData = {
   todo: [
     {
@@ -193,7 +191,6 @@ const loadTasksData = () => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      // ensure all expected columns exist; merge with defaults
       const normalized = {
         todo: Array.isArray(parsed.todo) ? parsed.todo : [],
         inProgress: Array.isArray(parsed.inProgress) ? parsed.inProgress : [],
@@ -201,14 +198,8 @@ const loadTasksData = () => {
         completed: Array.isArray(parsed.completed) ? parsed.completed : [],
         ...parsed,
       };
-
       const total = (normalized.todo?.length || 0) + (normalized.inProgress?.length || 0) + (normalized.reviewReady?.length || 0) + (normalized.completed?.length || 0);
-      // If parsed storage exists but there are no tasks across columns,
-      // return the normalized (empty) grouped object. Do not persist
-      // sample data automatically — the app will start empty until the
-      // user creates tasks.
       if (total === 0) return normalized;
-
       return normalized;
     }
 
@@ -219,16 +210,13 @@ const loadTasksData = () => {
         const arr = JSON.parse(flat);
         if (Array.isArray(arr)) {
           const merged = { ...initialTasksData, todo: arr };
-          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch (e) {}
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch (e) { }
           return merged;
         }
       } catch (e) {
       }
     }
-
-  // No saved data found — start with an empty grouped structure. Do not
-  // persist default/empty data so the app doesn't overwrite user intent.
-  return initialTasksData;
+    return initialTasksData;
   } catch (e) {
     return initialTasksData;
   }
@@ -443,12 +431,10 @@ const EmptyIcon = () => (
   </svg>
 );
 
-// ------------------ Main Component ------------------
-
 const TaskTracker = () => {
   const [tasksData, setTasksData] = useState(loadTasksData);
-  const [viewMode, setViewMode] = useState('board'); // 'board' | 'list' | 'table' | 'gantt' | 'calendar'
-  const [calendarView, setCalendarView] = useState('month'); // 'month' | 'week' | 'day'
+  const [viewMode, setViewMode] = useState('board');
+  const [calendarView, setCalendarView] = useState('month');
   const [calendarFilterCols, setCalendarFilterCols] = useState({ todo: true, inProgress: true, reviewReady: true, completed: true });
   const [form, setForm] = useState({
     category: "",
@@ -462,12 +448,8 @@ const TaskTracker = () => {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [detailTask, setDetailTask] = useState(null);
 
-  // Modes for selecting a card after clicking Edit / Remove in the To-do header
-  // null | 'edit' | 'remove'
   const [selectionMode, setSelectionMode] = useState(null);
-  // when editing a task, this holds the task id being edited
   const [editingTaskId, setEditingTaskId] = useState(null);
-  // when in 'remove' mode the user can pick multiple tasks to delete
   const [selectedTaskIds, setSelectedTaskIds] = useState([]);
   const [actionMessage, setActionMessage] = useState(null);
   const actionTimerRef = useRef(null);
@@ -482,7 +464,6 @@ const TaskTracker = () => {
 
   const openAssign = (taskToEdit = null) => {
     if (taskToEdit) {
-      // prefill form from task
       setForm({
         category: taskToEdit.category || "",
         userName: taskToEdit.userName || "",
@@ -511,8 +492,7 @@ const TaskTracker = () => {
     });
     setSelectedTaskIds([]);
     setSelectionMode(null);
-    // show a short-lived success message instead of an alert
-  const msg = `${selectedTaskIds.length} task${selectedTaskIds.length > 1 ? 's' : ''} deleted successfully`;
+    const msg = `${selectedTaskIds.length} task${selectedTaskIds.length > 1 ? 's' : ''} deleted successfully`;
     setActionMessage(msg);
     if (actionTimerRef.current) clearTimeout(actionTimerRef.current);
     actionTimerRef.current = setTimeout(() => setActionMessage(null), 3500);
@@ -534,7 +514,6 @@ const TaskTracker = () => {
   const handleAssignSubmit = (e) => {
     e.preventDefault();
 
-    // Build the task object from the form (assign/expiry are stored as ISO yyyy-mm-dd strings)
     const taskPayload = {
       category: form.category,
       userName: form.userName,
@@ -547,7 +526,6 @@ const TaskTracker = () => {
     };
 
     if (editingTaskId) {
-      // update existing task
       setTasksData((prev) => {
         const newGroups = {};
         Object.keys(prev).forEach((col) => {
@@ -566,7 +544,7 @@ const TaskTracker = () => {
       return;
     }
 
-    // create new task (default to todo)
+
     const allTasks = Object.values(tasksData).flat();
     const newTask = {
       id: Math.max(...allTasks.map((t) => t.id || 0), 0) + 1,
@@ -578,31 +556,22 @@ const TaskTracker = () => {
     setShowAssignModal(false);
   };
 
-  // note: individual remove is handled via bulk remove mode; no single-item remove helper needed
-
-  // Handlers for the To-do header menu actions
   const handleEditColumn = (colTitle) => {
-    // enable selection mode for editing a single card
     setSelectionMode('edit');
   };
 
   const handleRemoveColumn = (colTitle) => {
-    // enable selection mode for removing a single card
     setSelectionMode('remove');
     setSelectedTaskIds([]);
   };
 
-  // Task click handler that routes based on mode
   const handleTaskClick = (task) => {
     if (selectionMode === 'edit') {
-      // open assign modal prefilled for editing
       openAssign(task);
-      // leave selectionMode cleared (we're in modal now)
       setSelectionMode(null);
       return;
     }
     if (selectionMode === 'remove') {
-      // toggle selection for multi-delete
       setSelectedTaskIds((prev) => {
         const exists = prev.includes(task.id);
         if (exists) return prev.filter((id) => id !== task.id);
@@ -611,7 +580,6 @@ const TaskTracker = () => {
       return;
     }
 
-    // default: open detail view
     setDetailTask(task);
   };
 
@@ -620,31 +588,28 @@ const TaskTracker = () => {
     const diffDays = Math.ceil(
       (new Date(detailTask.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)
     );
-  if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? "s" : ""} left`;
+    if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? "s" : ""} left`;
     if (diffDays === 0) return "Due today";
     return `Overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) > 1 ? "s" : ""}`;
   })();
 
-  // Prepare Gantt data for Plotly from grouped tasksData
   const ganttData = useMemo(() => {
-    // preserve column information so we can color by column
     const flat = Object.entries(tasksData || {}).flatMap(([col, arr]) => (arr || []).map((t) => ({ ...t, _col: col })));
     const valid = flat.filter((t) => t && (t.assignDate || t.date) && t.expiryDate);
     if (!valid.length) return [];
 
-    // color by column
     const colColor = {
-      todo: '#60a5fa', // blue
-      inProgress: '#f59e0b', // amber
-      reviewReady: '#7c3aed', // purple
-      completed: '#34d399', // green
+      todo: '#60a5fa',
+      inProgress: '#f59e0b',
+      reviewReady: '#7c3aed',
+      completed: '#34d399',
     };
 
     return [
       {
         type: 'bar',
         orientation: 'h',
-  y: valid.map((t) => t.title || `Task ${t.id}`),
+        y: valid.map((t) => t.title || `Task ${t.id}`),
         x: valid.map((t) => {
           const start = new Date(t.assignDate || t.date);
           const end = new Date(t.expiryDate);
@@ -658,20 +623,12 @@ const TaskTracker = () => {
     ];
   }, [tasksData]);
 
-  // color mapping reused by calendar and gantt
-  const colColor = {
-    todo: '#60a5fa', // blue
-    inProgress: '#f59e0b', // amber
-    reviewReady: '#7c3aed', // purple
-    completed: '#34d399', // green
-  };
 
-  // light background colors for calendar events (so calendar looks 'light')
   const colBgColor = {
-    todo: '#f3e8ff', // purple-100 (light)
-    inProgress: '#fffbeb', // amber-50
-    reviewReady: '#ecfeff', // cyan/teal-50
-    completed: '#ecfdf5', // green-50
+    todo: '#f3e8ff',
+    inProgress: '#fffbeb',
+    reviewReady: '#ecfeff',
+    completed: '#ecfdf5',
   };
 
   const colTextColor = {
@@ -681,7 +638,6 @@ const TaskTracker = () => {
     completed: '#10b981',
   };
 
-  // Flatten tasksData with column info for calendar events
   const flatForCalendar = useMemo(() => Object.entries(tasksData || {}).flatMap(([col, arr]) => (arr || []).map((t) => ({ ...t, _col: col }))), [tasksData]);
 
   const calendarEvents = useMemo(() => flatForCalendar
@@ -689,14 +645,12 @@ const TaskTracker = () => {
     .map((t) => ({
       id: t.id,
       title: t.title || t.userName || `Task ${t.id}`,
-      // prefer assignDate as start and expiryDate as end for multi-day spans
       start: new Date(t.assignDate || t.date || t.expiryDate),
       end: new Date(t.expiryDate || t.assignDate || t.date),
       allDay: true,
       resource: t,
     })), [flatForCalendar, calendarFilterCols]);
 
-  // calendar event click handler
   const onCalendarSelect = (event) => {
     if (event && event.resource) setDetailTask(event.resource);
   };
@@ -706,7 +660,6 @@ const TaskTracker = () => {
   return (
     <>
       <Header onAddTask={openAssign} viewMode={viewMode} setViewMode={setViewMode} />
-      {/* Views: board / list / table / gantt / calendar */}
       {viewMode === 'board' && (
         <div className="board">
           <Column title="To-do" count={tasksData.todo.length} tasks={tasksData.todo} onAddTask={() => openAssign(null)} onTaskClick={handleTaskClick} showControls={true} onEditColumn={handleEditColumn} onRemoveColumn={handleRemoveColumn} selectionMode={selectionMode} selectedTaskIds={selectedTaskIds} />
@@ -718,7 +671,7 @@ const TaskTracker = () => {
 
       {viewMode === 'list' && (
         <div className="tt-panel-wrapper" data-edit-active="false" data-view="table">
-          {/* TABLE VIEW (header removed to avoid duplicate controls) */}
+
           <div className="tt-table-container">
             <table className="tt-table">
               <thead>
@@ -734,50 +687,19 @@ const TaskTracker = () => {
               </thead>
               <tbody>
                 {Object.entries(tasksData).flatMap(([col, tasks]) => tasks.map((t) => ({ ...t, _col: col }))).map((t) => (
-                    <tr key={`${t._col}-${t.id}`} onClick={() => handleTaskClick(t)} style={{ cursor: 'pointer' }}>
+                  <tr key={`${t._col}-${t.id}`} onClick={() => handleTaskClick(t)} style={{ cursor: 'pointer' }}>
                     <td>{t.assignDate || t.date || '-'}</td>
                     <td>{t.expiryDate || '-'}</td>
                     <td>{t.userName || '-'}</td>
                     <td>{t.title || '-'}</td>
-                      <td>{t.description || '-'}</td>
-                      <td className="tt-updates-td">{t.log || (t.comments ? `${t.comments} comments` : 'No updates')}</td>
+                    <td>{t.description || '-'}</td>
+                    <td className="tt-updates-td">{t.log || (t.comments ? `${t.comments} comments` : 'No updates')}</td>
                     <td>{t.progress || t.statusPercent || '-'}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          {/* BOARD VIEW removed — table-only list view requested */}
-        </div>
-      )}
-
-      {viewMode === 'table' && (
-        <div className="table-view">
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #e5e7eb' }}>ID</th>
-                <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #e5e7eb' }}>Title</th>
-                <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #e5e7eb' }}>User</th>
-                <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #e5e7eb' }}>Status</th>
-                <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #e5e7eb' }}>Assign</th>
-                <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #e5e7eb' }}>Expiry</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(tasksData).flatMap(([col, tasks]) => tasks.map((t) => (
-                <tr key={`${col}-${t.id}`}>
-                  <td style={{ padding: 8, borderBottom: '1px solid #f3f4f6' }}>{t.id}</td>
-                  <td style={{ padding: 8, borderBottom: '1px solid #f3f4f6' }}>{t.title}</td>
-                  <td style={{ padding: 8, borderBottom: '1px solid #f3f4f6' }}>{t.userName}</td>
-                  <td style={{ padding: 8, borderBottom: '1px solid #f3f4f6' }}>{col}</td>
-                  <td style={{ padding: 8, borderBottom: '1px solid #f3f4f6' }}>{formatDate(t.assignDate) || '-'}</td>
-                  <td style={{ padding: 8, borderBottom: '1px solid #f3f4f6' }}>{formatDate(t.expiryDate) || '-'}</td>
-                </tr>
-              )))}
-            </tbody>
-          </table>
         </div>
       )}
 
@@ -1013,7 +935,7 @@ const AssignModal = ({ form, onChange, onClose, onSubmit, isEditing }) => (
 const Input = ({ label, className, ...props }) => (
   <label>
     {label}
-            <input className={(className ? className + ' ' : '') + 'tt-input'} {...props} />
+    <input className={(className ? className + ' ' : '') + 'tt-input'} {...props} />
   </label>
 );
 
