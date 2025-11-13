@@ -20,7 +20,6 @@ body {
     padding: 0;
 }
 
-/* ------------------ Header ------------------ */
 
 .workspace-header {
     display: flex;
@@ -63,7 +62,6 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* small wrapper for header icons */
 .btn-icon {
     width: 16px;
     height: 16px;
@@ -140,21 +138,17 @@ body {
     outline-offset: 2px;
 }
 
-/* Consolidated column body rules (scrollbars, layout, max-height) */
 .column-body {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 10px 4px;
     scrollbar-width: thin;
-    /* Firefox */
     scrollbar-color: rgba(15, 23, 42, 0.12) transparent;
     max-height: calc(var(--card-h) * 3 + 44px);
-    /* 3 cards + gaps + padding */
     overflow-y: auto;
 }
 
-/* Themed vertical scrollbar for column bodies */
 .column-body::-webkit-scrollbar {
     width: 10px;
 }
@@ -174,7 +168,6 @@ body {
     background: rgba(15, 23, 42, 0.18);
 }
 
-/* Board horizontal scrollbar (when overflow-x appears) */
 .board {
     scrollbar-width: thin;
     scrollbar-color: rgba(15, 23, 42, 0.12) transparent;
@@ -200,11 +193,9 @@ body {
 @media (max-width: 600px) {
     .column-body {
         max-height: calc(var(--card-h) * 2 + 44px);
-        /* show 2 on small screens */
     }
 }
 
-/* ------------------ Task Cards ------------------ */
 
 .task-card {
     background: var(--white);
@@ -370,7 +361,6 @@ body {
     height: 14px;
 }
 
-/* ------------------ Empty State ------------------ */
 
 .empty-state {
     text-align: center;
@@ -386,7 +376,6 @@ body {
     opacity: 0.6;
 }
 
-/* ------------------ Modals ------------------ */
 
 .tt-popup-overlay {
     position: fixed;
@@ -459,15 +448,11 @@ body {
     font-size: 0.9rem;
     resize: none;
     background: transparent;
-    /* remove solid background so inputs blend with modal */
     color: var(--text);
-    /* ensure input text is visible */
 }
 
-/* Narrow only the simple text inputs rendered by the Input component */
 .tt-input {
     width: 160px;
-    /* requested width */
     max-width: 100%;
     box-sizing: border-box;
 }
@@ -482,7 +467,6 @@ body {
 .tt-form input::placeholder,
 .tt-form textarea::placeholder {
     color: #9ca3af;
-    /* muted placeholder */
 }
 
 @media (max-width: 600px) {
@@ -578,7 +562,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* Column inline popup (small menu) - Edit / Remove buttons */
 .more-menu {
     position: absolute;
     right: 0;
@@ -621,7 +604,6 @@ body {
     background: transparent;
 }
 
-/* Adjust popup */
 .react-datepicker {
     font-family: inherit;
     border-radius: 10px;
@@ -660,7 +642,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Gantt container styling */
 .gantt-container {
     background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
     border-radius: 12px;
@@ -699,7 +680,6 @@ body {
     color: var(--muted);
 }
 
-/* Calendar controls and legend */
 .calendar-container {
     padding: 16px;
     background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
@@ -716,7 +696,6 @@ body {
     margin-bottom: 12px;
 }
 
-/* Make the controls wrap on small screens */
 @media (max-width: 720px) {
     .calendar-controls {
         flex-direction: column;
@@ -754,7 +733,6 @@ body {
     font-size: 0.85rem
 }
 
-/* Big Calendar overrides to better match app theme */
 .rbc-calendar {
     background: transparent;
 }
@@ -797,7 +775,6 @@ body {
     color: var(--accent);
 }
 
-/* Calendar cells and headers */
 .rbc-header {
     background: transparent;
     color: var(--muted);
@@ -809,7 +786,6 @@ body {
     border-top: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-/* Event styling: use our color swatches but keep text readable */
 .rbc-event {
     color: #0f172a;
     padding: 4px 6px;
@@ -822,26 +798,20 @@ body {
     transform: translateY(-1px);
 }
 
-/* Improve month cell spacing */
 .rbc-month-row .rbc-row-content {
     min-height: 110px;
 }
 
-/* Small screens: reduce cell min height */
 @media (max-width: 600px) {
     .rbc-month-row .rbc-row-content {
         min-height: 80px;
     }
 }
 
-/* Legend spacing (already defined above) */
-
-
 .table-view table {
     width: 100%;
 }
 
-/* === Panel / Table styles used by TaskTracker === */
 .tt-panel-wrapper {
     border-radius: 0;
     box-shadow: none;

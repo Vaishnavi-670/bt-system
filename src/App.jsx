@@ -4,6 +4,7 @@ import Report from './Components/Report'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import TaskTracker from './Components/TaskTracker'
 import TaskUpdate from './Components/TaskUpdate'
+import LeadTracker from './Components/LeadTracker'
 
 function Home() {
   const navigate = useNavigate()
@@ -28,6 +29,12 @@ function Home() {
       >
         Task Tracker
       </button>
+      <button
+        className="form-toggle-buttons small"
+        onClick={() => navigate('/lead-tracker')}
+      >
+        Lead Tracker
+      </button>
     </div>
   )
 }
@@ -40,6 +47,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/task-update" element={<TaskUpdate />} />
         <Route path="/task-tracker" element={<TaskTracker />} />
+        <Route path="/lead-tracker" element={<LeadTracker />} />
       </Routes>
     </BrowserRouter>
   )
