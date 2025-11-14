@@ -51,7 +51,6 @@ const emptyLead = () => ({
 });
 
 function createSample() {
-  // return a set of varied sample leads for demo/testing
   return [
     {
       id: uid(),
@@ -67,9 +66,7 @@ function createSample() {
       followUpMethod: "Email",
       lastContactDate: todayISO(),
       notes: "Initial enquiry about X product.",
-      comments: [
-        { id: uid(), date: new Date().toISOString(), text: "Sent product brochure", method: "Email" },
-      ],
+      comments: [{ id: uid(), date: new Date().toISOString(), text: "Sent product brochure", method: "Email" }],
       potentialValue: "12000",
       probability: "40",
       expectedCloseDate: "",
@@ -78,7 +75,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "Green Manufacturing",
@@ -93,9 +89,7 @@ function createSample() {
       followUpMethod: "Call",
       lastContactDate: todayISO(),
       notes: "Asked for pricing and delivery details",
-      comments: [
-        { id: uid(), date: new Date().toISOString(), text: "Booked a demo for next week", method: "Meeting" },
-      ],
+      comments: [{ id: uid(), date: new Date().toISOString(), text: "Booked a demo for next week", method: "Meeting" }],
       potentialValue: "45000",
       probability: "60",
       expectedCloseDate: "",
@@ -104,7 +98,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "Seaside Retailers",
@@ -128,7 +121,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "BlueFin Logistics",
@@ -143,9 +135,7 @@ function createSample() {
       followUpMethod: "Call",
       lastContactDate: todayISO(),
       notes: "Negotiating SLA and support terms",
-      comments: [
-        { id: uid(), date: new Date().toISOString(), text: "Clarified support hours", method: "Call" },
-      ],
+      comments: [{ id: uid(), date: new Date().toISOString(), text: "Clarified support hours", method: "Call" }],
       potentialValue: "85000",
       probability: "70",
       expectedCloseDate: "",
@@ -154,7 +144,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "NorthStar Energy",
@@ -178,7 +167,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "Vivid Media House",
@@ -202,7 +190,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "Summit Healthcare",
@@ -217,9 +204,7 @@ function createSample() {
       followUpMethod: "Meeting",
       lastContactDate: todayISO(),
       notes: "Signed a pilot contract",
-      comments: [
-        { id: uid(), date: new Date().toISOString(), text: "Contract signed - onboarding scheduled", method: "Email" },
-      ],
+      comments: [{ id: uid(), date: new Date().toISOString(), text: "Contract signed - onboarding scheduled", method: "Email" }],
       potentialValue: "150000",
       probability: "100",
       expectedCloseDate: todayISO(),
@@ -228,7 +213,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "Evergreen Farms",
@@ -252,7 +236,6 @@ function createSample() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
-
     {
       id: uid(),
       customerName: "MetroBank Financials",
@@ -293,18 +276,13 @@ export default function LeadTracker() {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setLeads(parsed);
-        } else {
-          // if storage contains an empty array or malformed, load sample
-          setLeads(createSample());
+          return;
         }
       } catch (e) {
         console.error("Failed to parse leads from storage", e);
-        setLeads(createSample());
       }
-    } else {
-      // No stored leads: pre-load sample data for first-time users
-      setLeads(createSample());
     }
+    setLeads(createSample());
   }, []);
 
   useEffect(() => {
@@ -331,9 +309,7 @@ export default function LeadTracker() {
     e && e.preventDefault();
     if (!form.customerName) return alert("Customer Name is required");
     if (editing) {
-      setLeads((s) =>
-        s.map((l) => (l.id === editing ? { ...form, updatedAt: new Date().toISOString() } : l))
-      );
+      setLeads((s) => s.map((l) => (l.id === editing ? { ...form, updatedAt: new Date().toISOString() } : l)));
     } else {
       const newLead = { ...form, id: uid(), createdAt: new Date().toISOString() };
       setLeads((s) => [newLead, ...s]);
@@ -341,12 +317,7 @@ export default function LeadTracker() {
     setShowForm(false);
   }
 
-  function removeLead(id) {
-    if (!confirm("Delete this lead?")) return;
-    setLeads((s) => s.filter((l) => l.id !== id));
-  }
-
-  function addComment(leadId, commentText, method = "Other") {
+  function addComment(leadId, commentText, method = "Other", newStatus, newProbability) {
     if (!commentText) return;
     setLeads((s) =>
       s.map((l) =>
@@ -354,11 +325,21 @@ export default function LeadTracker() {
           ? {
               ...l,
               comments: [
-                { id: uid(), date: new Date().toISOString(), text: commentText, method },
+                {
+                  id: uid(),
+                  date: new Date().toISOString(),
+                  text: commentText,
+                  method,
+                  status: newStatus || undefined,
+                  probability: newProbability || undefined,
+                },
                 ...(l.comments || []),
               ],
               lastContactDate: new Date().toISOString().slice(0, 10),
               updatedAt: new Date().toISOString(),
+              ...(newStatus ? { status: newStatus } : {}),
+              ...(newProbability ? { probability: newProbability } : {}),
+              ...(method ? { followUpMethod: method } : {}),
             }
           : l
       )
@@ -368,8 +349,6 @@ export default function LeadTracker() {
   function quickUpdate(leadId, patch) {
     setLeads((s) => s.map((l) => (l.id === leadId ? { ...l, ...patch, updatedAt: new Date().toISOString() } : l)));
   }
-
-  // sample loader removed (Load Sample button was removed)
 
   function clearAll() {
     if (!confirm("Clear all leads from localStorage?")) return;
@@ -381,8 +360,12 @@ export default function LeadTracker() {
       <div className="lead-header">
         <h2>Lead Tracker</h2>
         <div className="lead-actions">
-          <button className="btn" onClick={openNew}>Add Lead</button>
-          <button className="btn btn-danger" onClick={clearAll}>Clear All</button>
+          <button className="btn" onClick={openNew}>
+            Add Lead
+          </button>
+          <button className="btn btn-danger" onClick={clearAll}>
+            Clear All
+          </button>
         </div>
       </div>
 
@@ -398,6 +381,7 @@ export default function LeadTracker() {
               <th>Assigned To</th>
               <th>Status</th>
               <th>Follow-up Date</th>
+              <th>Follow-up Method</th>
               <th>Last Contact</th>
               <th>Potential Value</th>
               <th>Prob. (%)</th>
@@ -407,7 +391,9 @@ export default function LeadTracker() {
           <tbody>
             {leads.length === 0 && (
               <tr>
-                <td colSpan={12} className="lead-empty">No leads yet — add one or load sample data.</td>
+                <td colSpan={13} className="lead-empty">
+                  No leads yet — add one or load sample data.
+                </td>
               </tr>
             )}
             {leads.map((l) => (
@@ -421,57 +407,38 @@ export default function LeadTracker() {
                 <td>{l.leadSource}</td>
                 <td>{l.industry}</td>
                 <td>{l.assignedTo}</td>
+                <td>{l.status}</td>
+                <td>{l.followUpDate || "-"}</td>
                 <td>
-                  <select value={l.status} onChange={(e) => quickUpdate(l.id, { status: e.target.value })}>
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="date"
-                    value={l.followUpDate || ""}
-                    onChange={(e) => quickUpdate(l.id, { followUpDate: e.target.value })}
-                  />
+                  {(() => {
+                    const methods = (l.comments || []).map((c) => c.method).filter(Boolean);
+                    const uniq = [];
+                    for (const m of methods) if (!uniq.includes(m)) uniq.push(m);
+                    const prev = uniq.filter((m) => m !== l.followUpMethod);
+                    const title = (l.comments || []).map((c) => `${new Date(c.date).toLocaleString()}: ${c.method || "-"}`).join("\n");
+                    return (
+                      <div className="follow-method" title={title}>
+                        <div className="primary-method">{l.followUpMethod || "-"}</div>
+                        {prev && prev.length > 0 ? <div className="prev-methods">{prev.slice(0, 3).join(", ")}</div> : null}
+                      </div>
+                    );
+                  })()}
                 </td>
                 <td>{l.lastContactDate || "-"}</td>
                 <td className="mono">{l.potentialValue ? "$" + l.potentialValue : "-"}</td>
                 <td>{l.probability || "-"}</td>
                 <td className="actions-col">
-                  <button
-                    className="btn small icon-btn"
-                    onClick={() => openEdit(l)}
-                    title="Edit"
-                    aria-label={`Edit ${l.customerName}`}
-                  >
+                  <button className="btn small icon-btn" onClick={() => openEdit(l)} title="Edit" aria-label={`Edit ${l.customerName}`}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor" />
                       <path d="M20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" fill="currentColor" />
                     </svg>
                   </button>
 
-                  <button
-                    className="btn small icon-btn"
-                    onClick={() => setShowCommentsFor(l.id)}
-                    title="Comments"
-                    aria-label={`Comments for ${l.customerName}`}
-                  >
+                  <button className="btn small icon-btn" onClick={() => setShowCommentsFor(l.id)} title="Comments" aria-label={`Comments for ${l.customerName}`}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <path d="M21 6h-2v9H7v2c0 .55.45 1 1 1h9l4 4V7c0-.55-.45-1-1-1z" fill="currentColor" />
                       <path d="M17 2H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z" fill="currentColor" />
-                    </svg>
-                  </button>
-
-                  <button
-                    className="btn small icon-btn btn-danger"
-                    onClick={() => removeLead(l.id)}
-                    title="Delete"
-                    aria-label={`Delete ${l.customerName}`}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                      <path d="M6 19c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V7H6v12z" fill="currentColor" />
-                      <path d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor" />
                     </svg>
                   </button>
                 </td>
@@ -520,7 +487,9 @@ export default function LeadTracker() {
                 Status
                 <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
                   {STATUS_OPTIONS.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -534,7 +503,11 @@ export default function LeadTracker() {
                 Follow-up Method
                 <select value={form.followUpMethod} onChange={(e) => setForm({ ...form, followUpMethod: e.target.value })}>
                   <option value="">—</option>
-                  {FOLLOWUP_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
+                  {FOLLOWUP_METHODS.map((m) => (
+                    <option key={m} value={m}>
+                      {m}
+                    </option>
+                  ))}
                 </select>
               </label>
 
@@ -564,8 +537,12 @@ export default function LeadTracker() {
               </label>
 
               <div className="form-actions full">
-                <button className="btn" type="submit">Save</button>
-                <button className="btn" type="button" onClick={() => setShowForm(false)}>Cancel</button>
+                <button className="btn" type="submit">
+                  Save
+                </button>
+                <button className="btn" type="button" onClick={() => setShowForm(false)}>
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -576,16 +553,19 @@ export default function LeadTracker() {
         <CommentsModal
           lead={leads.find((x) => x.id === showCommentsFor)}
           onClose={() => setShowCommentsFor(null)}
-          onAdd={(text, method) => addComment(showCommentsFor, text, method)}
+          onAdd={(text, method, status, probability) => addComment(showCommentsFor, text, method, status, probability)}
+          onFieldChange={(patch) => quickUpdate(showCommentsFor, patch)}
         />
       )}
     </div>
   );
 }
 
-function CommentsModal({ lead, onClose, onAdd }) {
+function CommentsModal({ lead, onClose, onAdd, onFieldChange }) {
   const [text, setText] = useState("");
-  const [method, setMethod] = useState(FOLLOWUP_METHODS[0]);
+  const [method, setMethod] = useState(lead?.followUpMethod || FOLLOWUP_METHODS[0]);
+  const [status, setStatus] = useState(lead?.status || STATUS_OPTIONS[0]);
+  const [probability, setProbability] = useState(lead?.probability || "");
 
   if (!lead) return null;
 
@@ -597,7 +577,7 @@ function CommentsModal({ lead, onClose, onAdd }) {
           {lead.comments && lead.comments.length > 0 ? (
             lead.comments.map((c) => (
               <div key={c.id} className="comment-row">
-                <div className="comment-meta">{(new Date(c.date)).toLocaleString()} • {c.method}</div>
+                <div className="comment-meta">{new Date(c.date).toLocaleString()} • {c.method}</div>
                 <div className="comment-text">{c.text}</div>
               </div>
             ))
@@ -607,13 +587,71 @@ function CommentsModal({ lead, onClose, onAdd }) {
         </div>
 
         <div className="comment-form">
-          <select value={method} onChange={(e) => setMethod(e.target.value)}>
-            {FOLLOWUP_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
-          </select>
+          <label className="inline">
+            Status
+            <select
+              value={status}
+              onChange={(e) => {
+                const v = e.target.value;
+                setStatus(v);
+                onFieldChange && onFieldChange({ status: v });
+              }}
+            >
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="inline">
+            Method
+            <select
+              value={method}
+              onChange={(e) => {
+                const v = e.target.value;
+                setMethod(v);
+                onFieldChange && onFieldChange({ followUpMethod: v });
+              }}
+            >
+              {FOLLOWUP_METHODS.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="inline">
+            Prob. (%)
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={probability}
+              onChange={(e) => {
+                const v = e.target.value;
+                setProbability(v);
+                onFieldChange && onFieldChange({ probability: v });
+              }}
+            />
+          </label>
+
           <textarea placeholder="Add a short note about this interaction" value={text} onChange={(e) => setText(e.target.value)} />
           <div className="form-actions">
-            <button className="btn" onClick={() => { onAdd(text, method); setText(""); }}>Add Comment</button>
-            <button className="btn" onClick={onClose}>Close</button>
+            <button
+              className="btn"
+              onClick={() => {
+                onAdd(text, method, status, probability);
+                setText("");
+              }}
+            >
+              Add Comment
+            </button>
+            <button className="btn" onClick={onClose}>
+              Close
+            </button>
           </div>
         </div>
       </div>
