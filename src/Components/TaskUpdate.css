@@ -1,384 +1,203 @@
-/* Task Update Container */
+/* Task Update styles */
 .tu-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 20px;
-    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    padding: 20px 12px;
+    box-sizing: border-box;
 }
 
-/* Main Panel */
 .tu-panel {
-    background: white;
-    /* border-radius: 16px; */
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    padding: 25px;
-    width: 100%;
-    padding-top: 0;
-    max-width: 700px;
+    width: min(720px, 92%);
+    max-width: 100%;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
 }
 
-/* Title */
 .tu-title {
-    font-size: 32px;
-    font-weight: 800;
-    color: #1e293b;
-    margin: 0;
-    text-align: center;
-    /* background: linear-gradient(135deg, #667eea, #764ba2); */
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin: 0 0 12px 0;
+    font-size: 1.25rem;
+    color: var(--primary-color, #1e293b);
+    font-weight: 700;
 }
 
-/* Form */
 .tu-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 12px 16px;
 }
 
-/* Form Group */
 .tu-form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
-.tu-form-group.tu-full-width {
+.tu-full-width {
     grid-column: 1 / -1;
 }
 
-.tu-form-group.tu-user-field {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
-    padding: 10px;
-    border-radius: 12px;
-    /* border: 2px solid #667eea; */
-}
-
-/* Label */
 .tu-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    color: var(--muted, #6b7280);
+    margin-bottom: 6px;
+    font-weight: 600;
 }
 
 .tu-required {
     color: #ef4444;
-    font-weight: 800;
+    margin-left: 6px;
+    font-weight: 700;
 }
 
-/* Input Styles */
-.tu-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 15px;
-    outline: none;
-    transition: all 0.3s;
-    background: white;
-    box-sizing: border-box;
-    font-family: inherit;
-}
-
-.tu-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-.tu-input::placeholder {
-    color: #94a3b8;
-}
-
-.tu-input:read-only,
-.tu-input:disabled {
-    background: #f8fafc;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-/* Textarea */
+.tu-input,
 .tu-textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e2e8f0;
+    border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px;
-    font-size: 15px;
-    outline: none;
+    padding: 8px 10px;
+    font-size: 0.95rem;
+    color: var(--text, #111827);
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.tu-textarea {
     resize: vertical;
     min-height: 120px;
-    font-family: inherit;
-    transition: all 0.3s;
-    box-sizing: border-box;
 }
 
-.tu-textarea:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-.tu-textarea::placeholder {
-    color: #94a3b8;
-}
-
-/* Dropdown Wrapper */
 .tu-dropdown-wrapper {
     position: relative;
 }
 
 .tu-dropdown {
     position: absolute;
-    top: 100%;
     left: 0;
     right: 0;
-    margin-top: 4px;
-    background: white;
-    border: 2px solid #667eea;
+    top: calc(100% + 6px);
+    background: #fff;
+    border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    max-height: 250px;
-    overflow-y: auto;
-    z-index: 1000;
+    max-height: 220px;
+    overflow: auto;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
+    z-index: 80;
 }
 
 .tu-dropdown-item {
-    padding: 12px 16px;
+    padding: 8px 10px;
+    font-size: 0.92rem;
+    color: var(--text, #111827);
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 14px;
-    color: #334155;
 }
 
 .tu-dropdown-item:hover {
-    background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
-    color: #667eea;
-    font-weight: 600;
+    background: var(--hover, #f3f4f6);
 }
 
-.tu-dropdown-item:not(:last-child) {
-    border-bottom: 1px solid #f1f5f9;
-}
-
-/* Scrollbar for dropdown */
-.tu-dropdown::-webkit-scrollbar {
-    width: 8px;
-}
-
-.tu-dropdown::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 4px;
-}
-
-.tu-dropdown::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-
-.tu-dropdown::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-
-/* Button Container */
-.tu-button-container {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    margin-top: 16px;
-}
-
-/* Submit Button */
-.tu-submit-btn {
-    padding: 16px 48px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-}
-
-.tu-submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
-}
-
-.tu-submit-btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-/* DatePicker Styling */
-.react-datepicker-wrapper {
-    width: 100%;
-}
-
-.react-datepicker__input-container {
-    width: 100%;
-}
-
-/* Status Display */
 .tu-status-display {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* Editable Status Enhancements */
-.tu-status-editable {
-    gap: 12px;
-}
-
 .tu-status-controls {
     display: flex;
+    gap: 8px;
     align-items: center;
-    gap: 12px;
 }
 
-.tu-status-number {
-    width: 80px;
-    text-align: center;
-}
-
-/* Slider Styling */
 .tu-status-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 100%;
-    height: 8px;
+    height: 6px;
     border-radius: 999px;
-    background: linear-gradient(90deg, #ef4444, #f97316, #3b82f6, #10b981);
-    outline: none;
-    opacity: 0.9;
-    transition: opacity 0.2s ease;
-}
-
-.tu-status-slider:hover {
-    opacity: 1;
+    background: #e6e6e6;
+    flex: 1 1 auto;
 }
 
 .tu-status-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    background: white;
-    border: 3px solid #667eea;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    cursor: pointer;
+    background: var(--primary-color, #2563eb);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
-.tu-status-slider::-moz-range-thumb {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    border: 3px solid #667eea;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    cursor: pointer;
+.tu-status-number {
+    width: 72px;
+    padding: 6px 8px;
+    border-radius: 8px;
 }
 
 .tu-status-text {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1e293b;
+    font-weight: 600;
+    min-width: 42px;
+    text-align: right;
 }
 
 .tu-status-bar {
-    width: 100%;
-    height: 24px;
-    background: #e2e8f0;
-    border-radius: 12px;
+    height: 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
     overflow: hidden;
-    position: relative;
 }
 
 .tu-status-fill {
     height: 100%;
-    border-radius: 12px;
-    transition: all 0.5s ease;
-    position: relative;
-    /* Use background-color only so it can change dynamically from JSX */
-    background-color: #3b82f6; /* default (blue) */
+    transition: width 0.25s ease-in-out;
 }
 
-.tu-status-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0.1) 0%, 
-        rgba(255, 255, 255, 0.3) 50%, 
-        rgba(255, 255, 255, 0.1) 100%
-    );
-    animation: shimmer 2s infinite;
+.tu-button-container {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
 }
 
-@keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
+.tu-submit-btn {
+    background: var(--primary-color, #2563eb);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .tu-container {
-        padding: 10px;
-    }
+.tu-submit-btn:hover {
+    background: #1e40af;
+}
 
+@media (max-width: 900px) {
     .tu-panel {
-        padding: 24px;
-    }
-
-    .tu-title {
-        font-size: 24px;
-        margin-bottom: 24px;
+        padding: 16px;
     }
 
     .tu-form {
         grid-template-columns: 1fr;
-        gap: 20px;
     }
 
-    .tu-form-group.tu-user-field {
-        padding: 16px;
+    .tu-button-container {
+        justify-content: stretch;
     }
 
-    .tu-submit-btn {
-        width: 100%;
-        padding: 14px 24px;
-        font-size: 16px;
+    .tu-container {
+        padding: 24px 12px;
+        min-height: calc(100vh - 40px);
     }
 }
 
 @media (max-width: 480px) {
     .tu-panel {
-        padding: 20px;
+        padding: 12px;
     }
 
     .tu-title {
-        font-size: 20px;
-    }
-
-    .tu-input,
-    .tu-textarea {
-        font-size: 14px;
-        padding: 10px 14px;
+        font-size: 1rem;
     }
 }

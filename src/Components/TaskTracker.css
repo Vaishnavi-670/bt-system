@@ -1,4 +1,3 @@
-/* ------------------ Global ------------------ */
 :root {
     --bg: #f9fafb;
     --white: #ffffff;
@@ -84,6 +83,25 @@ body {
     gap: 20px;
     padding: 20px 28px;
     align-items: flex-start;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 23, 42, 0.12) transparent;
+}
+
+.board::-webkit-scrollbar {
+    height: 10px;
+}
+
+.board::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.board::-webkit-scrollbar-thumb {
+    background: rgba(15, 23, 42, 0.12);
+    border-radius: 9999px;
+}
+
+.board::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 23, 42, 0.18);
 }
 
 
@@ -175,27 +193,7 @@ body {
     background: rgba(15, 23, 42, 0.18);
 }
 
-.board {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(15, 23, 42, 0.12) transparent;
-}
-
-.board::-webkit-scrollbar {
-    height: 10px;
-}
-
-.board::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.board::-webkit-scrollbar-thumb {
-    background: rgba(15, 23, 42, 0.12);
-    border-radius: 9999px;
-}
-
-.board::-webkit-scrollbar-thumb:hover {
-    background: rgba(15, 23, 42, 0.18);
-}
+ 
 
 @media (max-width: 600px) {
     .column-body {
@@ -271,7 +269,6 @@ body {
     top: 20px;
     background: rgba(16, 185, 129, 0.06);
     color: #059669;
-    /* green text */
     border: 1px solid rgba(6, 95, 70, 0.08);
     padding: 8px 12px;
     border-radius: 8px;
@@ -402,7 +399,6 @@ body {
     border-radius: 12px;
     padding: 24px;
     width: 520px;
-    /* wider so two-column form fits comfortably */
     max-width: calc(100% - 40px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     animation: popupFade 0.2s ease;
@@ -770,9 +766,6 @@ body {
 .rbc-toolbar button:hover {
      background: rgb(247, 247, 251);
 }
-/* Remove shadow and box-shadow applied by react-big-calendar and other defaults
-   so toolbar buttons and calendar events don't show inset/dropped shadows
-   when focused/active/hovered. */
 .rbc-toolbar button,
 .rbc-toolbar button:active,
 .rbc-toolbar button.rbc-active,
@@ -792,22 +785,18 @@ body {
     -webkit-box-shadow: none !important;
 }
 
-/* Active / selected button appearance: blue background with white text */
 .rbc-toolbar button.rbc-active,
 .rbc-toolbar button:active,
 .rbc-toolbar button:focus {
-    background: #2563eb !important; /* blue */
+    background: #2563eb !important;
     color: #ffffff !important;
     border-color: transparent !important;
 }
-
-/* Keep hover consistent when active */
 .rbc-toolbar button.rbc-active:hover,
 .rbc-toolbar button:active:hover {
-    background: #1e40af !important; /* slightly darker on hover */
+    background: #1e40af !important;
     color: #ffffff !important;
 }
-/* (no explicit .rbc-active overrides here; active styling handled by more specific rules above) */
 
 .rbc-header {
     background: transparent;
