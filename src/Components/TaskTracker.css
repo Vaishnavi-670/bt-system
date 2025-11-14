@@ -25,7 +25,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 28px;
+    margin: 0;
+    padding: 5px;
     border-bottom: 1px solid var(--border);
     background: var(--white);
     position: sticky;
@@ -33,17 +34,23 @@ body {
     z-index: 10;
 }
 
+.workspace-header .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .action-btn {
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 6px 12px;
+    padding: 6px;
     font-size: 0.9rem;
     color: var(--muted);
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .action-btn:hover {
@@ -633,7 +640,6 @@ body {
         grid-template-columns: 1fr;
     }
 }
-
 .list-view,
 .gantt-view,
 .calendar-view {
@@ -641,7 +647,6 @@ body {
     max-width: 100%;
     box-sizing: border-box;
 }
-
 .gantt-container {
     background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
     border-radius: 12px;
@@ -747,7 +752,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
     margin-bottom: 8px;
 }
 
@@ -757,23 +761,53 @@ body {
 }
 
 .rbc-toolbar button {
-    padding: 6px 10px;
     border-radius: 8px;
-    border: 1px solid var(--border);
     background: var(--white);
-    color: var(--muted);
+    color: blue;
     cursor: pointer;
 }
 
 .rbc-toolbar button:hover {
-    background: var(--hover);
-    color: var(--text);
+     background: rgb(247, 247, 251);
+}
+/* Remove shadow and box-shadow applied by react-big-calendar and other defaults
+   so toolbar buttons and calendar events don't show inset/dropped shadows
+   when focused/active/hovered. */
+.rbc-toolbar button,
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active,
+.rbc-toolbar button:focus,
+.rbc-toolbar button:hover {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    outline: none !important;
 }
 
-.rbc-toolbar .rbc-active {
-    border-color: var(--accent);
-    color: var(--accent);
+.calendar-container button,
+.calendar-container .btn,
+.rbc-event,
+.rbc-event:active,
+.rbc-event:focus {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 }
+
+/* Active / selected button appearance: blue background with white text */
+.rbc-toolbar button.rbc-active,
+.rbc-toolbar button:active,
+.rbc-toolbar button:focus {
+    background: #2563eb !important; /* blue */
+    color: #ffffff !important;
+    border-color: transparent !important;
+}
+
+/* Keep hover consistent when active */
+.rbc-toolbar button.rbc-active:hover,
+.rbc-toolbar button:active:hover {
+    background: #1e40af !important; /* slightly darker on hover */
+    color: #ffffff !important;
+}
+/* (no explicit .rbc-active overrides here; active styling handled by more specific rules above) */
 
 .rbc-header {
     background: transparent;

@@ -40,6 +40,25 @@ const ICONS = {
     </svg>
   ),
 };
+
+// Custom toolbar for react-big-calendar: keep only navigation (Prev/Today/Next)
+function CalendarToolbar({ label, onNavigate, onView, view }) {
+  return (
+    <div className="rbc-toolbar">
+      <div className="rbc-btn-group rbc-left">
+        <button className={`btn ${view === 'month' ? 'active' : ''}`} type="button" onClick={() => onView('month')}>Month</button>
+        <button className={`btn ${view === 'week' ? 'active' : ''}`} type="button" onClick={() => onView('week')}>Week</button>
+        <button className={`btn ${view === 'day' ? 'active' : ''}`} type="button" onClick={() => onView('day')}>Day</button>
+      </div>
+      <div className="rbc-toolbar-label">{label}</div>
+      <div className="rbc-btn-group rbc-right">
+        <button type="button" onClick={() => onNavigate('PREV')}>Back</button>
+        <button type="button" onClick={() => onNavigate('TODAY')}>Today</button>
+        <button type="button" onClick={() => onNavigate('NEXT')}>Next</button>
+      </div>
+    </div>
+  );
+}
 const initialTasksData = {
   todo: [
     {
@@ -435,6 +454,7 @@ const TaskTracker = () => {
   const [tasksData, setTasksData] = useState(loadTasksData);
   const [viewMode, setViewMode] = useState('board');
   const [calendarView, setCalendarView] = useState('month');
+  const [calendarDate, setCalendarDate] = useState(new Date());
   const [calendarFilterCols, setCalendarFilterCols] = useState({ todo: true, inProgress: true, reviewReady: true, completed: true });
   const [form, setForm] = useState({
     category: "",
@@ -622,8 +642,6 @@ const TaskTracker = () => {
       },
     ];
   }, [tasksData]);
-
-
   const colBgColor = {
     todo: '#f3e8ff',
     inProgress: '#fffbeb',
@@ -705,12 +723,6 @@ const TaskTracker = () => {
 
       {viewMode === 'gantt' && (
         <div className="gantt-container">
-          <div className="gantt-legend" aria-hidden>
-            <div className="legend-item"><span className="swatch" style={{ background: '#60a5fa' }} /> To-do</div>
-            <div className="legend-item"><span className="swatch" style={{ background: '#f59e0b' }} /> In Progress</div>
-            <div className="legend-item"><span className="swatch" style={{ background: '#7c3aed' }} /> Review Ready</div>
-            <div className="legend-item"><span className="swatch" style={{ background: '#34d399' }} /> Completed</div>
-          </div>
           {ganttData.length > 0 ? (
             <Plot
               data={ganttData}
@@ -737,37 +749,26 @@ const TaskTracker = () => {
       {viewMode === 'calendar' && (
         <div className="calendar-container">
           <div className="calendar-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <button className={`btn ${calendarView === 'month' ? 'active' : ''}`} onClick={() => setCalendarView('month')}>Month</button>
-              <button className={`btn ${calendarView === 'week' ? 'active' : ''}`} onClick={() => setCalendarView('week')}>Week</button>
-              <button className={`btn ${calendarView === 'day' ? 'active' : ''}`} onClick={() => setCalendarView('day')}>Day</button>
-            </div>
-
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <div className="calendar-legend" aria-hidden>
-                <div className="legend-item"><span className="swatch" style={{ background: colBgColor.todo, border: '1px solid ' + colTextColor.todo }} /> To-do</div>
-                <div className="legend-item"><span className="swatch" style={{ background: colBgColor.inProgress, border: '1px solid ' + colTextColor.inProgress }} /> In Progress</div>
-                <div className="legend-item"><span className="swatch" style={{ background: colBgColor.reviewReady, border: '1px solid ' + colTextColor.reviewReady }} /> Review Ready</div>
-                <div className="legend-item"><span className="swatch" style={{ background: colBgColor.completed, border: '1px solid ' + colTextColor.completed }} /> Completed</div>
-              </div>
-
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                {Object.keys(calendarFilterCols).map((c) => (
-                  <button key={c} className={`btn filter-btn ${calendarFilterCols[c] ? 'active' : ''}`} onClick={() => toggleCalendarCol(c)} style={{ textTransform: 'capitalize' }}>{c.replace(/([A-Z])/g, ' $1')}</button>
-                ))}
-              </div>
+            <div />
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              {Object.keys(calendarFilterCols).map((c) => (
+                <button key={c} className={`btn filter-btn`} onClick={() => toggleCalendarCol(c)} style={{ textTransform: 'capitalize' }}>{c.replace(/([A-Z])/g, ' $1')}</button>
+              ))}
             </div>
           </div>
 
           {calendarEvents.length > 0 ? (
             <BigCalendar
-              localizer={momentLocalizer(moment)}
+              localizer={localizer}
               events={calendarEvents}
               startAccessor="start"
               endAccessor="end"
               style={{ height: 600 }}
               view={calendarView}
+              date={calendarDate}
+              onNavigate={(date, action) => setCalendarDate(date)}
               onView={(v) => setCalendarView(v)}
+              components={{ toolbar: CalendarToolbar }}
               views={["month", "week", "day"]}
               onSelectEvent={onCalendarSelect}
               eventPropGetter={(event) => ({
